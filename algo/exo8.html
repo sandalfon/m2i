@@ -1,0 +1,79 @@
+
+<html>
+<style>
+pre{
+  color : blue;
+}
+</style>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+
+    <pre>
+                                       |__
+                                       |\/
+                                       ---
+                                      / | [
+                               !      | |||
+                             _/|     _/|-++'
+                         +  +--|    |--|--|_ |-
+                      { /|__|  |/\__|  |--- |||__/
+                     +---------------___[}-_===_.'____                 /\
+                 ____`-' ||___-{]_| _[}-  |     |_[___\==--            \/   _
+  __..._____--==/___]_|__|_____________________________[___\==--____,------' .7
+  |                                                                     BB-61/
+  \_________________________________________________________________________|
+</pre>
+<h1>Bataille navale</h1>
+<div id ="zoneSaisie">
+Position de tir:
+<input type='text' id="tir" value='0'/>
+<input type='button' value='Valider' onclick="impacte()"/>
+<h1 id='message'>-----------------</h1>
+</div>
+<script>
+// generer la valeur secret
+var navire = {
+    position : 0,
+    longueur : 0,
+    state: []
+}
+navire.longueur = Math.floor(Math.random () * 3) + 2
+navire.position  = Math.floor(Math.random () * (100 - navire.longueur))
+for(i=0; i< navire.longueur;i++){
+  navire.state[i]=0
+}
+console.log(navire)
+
+var compteur = 10 - 1
+
+
+function impacte()
+{
+
+    var tir = parseInt(document.getElementById("tir").value)
+    console.log(tir);
+    var message   = document.getElementById("message")
+   if (tir >= navire.position && tir < navire.position + navire.longueur){
+  navire.state[tir - navire.position ]=1
+      message.innerHTML = "touché"
+    }
+      else {
+          message.innerHTML = "raté"
+      }
+      console.log(navire)
+   if(navire.state.indexOf(0)==-1)
+     document.getElementById("zoneSaisie").innerHTML = "<h1>coulé</h1><br>"+
+     "<pre>"+
+"                                  \\\n"+
+"                                   \\   O,\n"+
+"                        \\___________\\/ )_________/\n"+
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \\~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"+
+"                                       \\\n"+
+"</pre>"
+
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<html>
+
+<style>
+</style>
+<body>
+  <h1> Jouons ensemble</h1>
+  <img src='data/02.jpg' width=20%/ onclick='faire()'>
+  <h1> Devine la valeur secrete en 10 coups</h1>
+  <div id="zoneSaisie">
+    Saisie de valeur : <input type ='text' id="lasaisie" valeur ='0'/>
+    <input type='button' value='Devine hahaha'onclick="jouer()"/>
+  </div>
+  <div id="reponse">
+
+    <div>
+      <script>
+      var valeur =  Math.floor(Math.random() * 100)
+      var maxCount = 10;
+      var curCount = 0;
+      function jouer(){
+        var afficher = document.getElementById("reponse")
+        var v = parseInt(document.getElementById("lasaisie").value) - valeur
+
+        if(curCount == maxCount){
+          var message = "<h2>Dégouté hein? </h2>"
+          afficher.innerHTML= "<h2>"+message+"</h2>"
+
+          document.getElementById("zoneSaisie").innerHTML= "<h1>Perdu! Je vais tuer un chaton pour la peine</h1>"
+          return 0;
+        }
+
+        if( v == 0 ){
+          message = "Je l'aurai un jour...."
+          afficher.innerHTML= "<h1>"+message+"</h1>"
+          document.getElementById("zoneSaisie").innerHTML= "<h1>"+"Bravo !!"+"</h1>"
+          return 0;
+        }
+        curCount ++
+
+
+        var message = (v >0?"plus bas":"plus haut")
+        afficher.innerHTML= "<h2> "+message+"</h2> <br>plus que "+(maxCount - curCount)+" coups !"
+
+      }
+    </script>
+  </body>
+  </html>
