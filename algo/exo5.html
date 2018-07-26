@@ -1,0 +1,107 @@
+<html>
+<script>
+
+function genereAleatoire(max)
+{
+    var t =  []
+    for(var i =0; i<max; i++)
+    {
+        t.push (Math.floor(Math.random() * 100))
+    }
+    return t;
+}
+
+function extraitPairs (tt)
+{
+    var t =  []
+    for(var i =0; i<tt.length; i++)
+    {
+        if(tt[i] % 2 == 0) t.push (tt[i])
+    }
+    return t;
+}
+
+function extraitImpairs (tt)
+{
+    var t =  []
+    for(var i =0; i<tt.length; i++)
+    {
+        if(tt[i] % 2 != 0) t.push (tt[i])
+    }
+    return t;
+}
+
+function min( t )
+{
+    var m =  t[0]
+    for (var i=1; i<t.length ; i++)
+    {
+        if (t[i] < m) m = t[i]
+    }
+    return m
+}
+
+function max( t )
+{
+    var m =  t[0]
+    for (var i=1; i<t.length ; i++)
+    {
+        if (t[i] > m) m = t[i]
+    }
+    return m
+}
+
+function retirer (v, t)
+{
+    var indice = t.indexOf(v)
+    if (indice >=0) t.splice(indice,1)
+}
+
+function trierD (t)
+{
+    var d=  []
+    while (true)
+    {
+        var m = max (t)
+        d.push (m)
+        retirer (m, t)
+        if (t.length == 0) break
+    }
+    return d;
+}
+
+function trierA (t)
+{
+    var d=  []
+    while (true)
+    {
+        var m = min (t)
+        d.push (m)
+        retirer (m, t)
+        if (t.length == 0) break
+    }
+    return d;
+}
+
+function fusion (tp, ti)
+{
+    var t =  []
+    for (var i =0; i<tp.length; i++) t.push (tp[i])
+    for (var i =0; i<ti.length; i++) t.push (ti[i])
+    return t;
+}
+
+    var s = genereAleatoire(20)
+    var pairs = extraitPairs (s)
+    pairs = trierD (pairs)
+    console.log(pairs)
+    var impairs = extraitImpairs (s)
+    impairs = trierA (impairs)
+    console.log(impairs)
+    var pairsimpairs = fusion (impairs, pairs)
+    console.log(pairsimpairs)
+
+</script>
+<body>
+<html>
+<body>
