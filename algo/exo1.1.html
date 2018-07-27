@@ -1,0 +1,16 @@
+<html>
+<script>
+  function Person(name, firstName, age) {
+    this.name = name
+    this.firstName = firstName
+    this.age = age
+    this.getInfos = function(){
+      return "Hello my name is "+this.name+" "+this.firstName+" and I am "+this.age
+    }
+  }
+  var p1 = new Person("toto","tata",23);
+  var p2 = new Person("tutu","titi",15);
+  console.log(p1.getInfos())
+  console.log(p2.getInfos())
+</script>
+</html>

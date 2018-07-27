@@ -1,0 +1,32 @@
+<html>
+<script>
+  function Person(name, firstName, age) {
+    this.name = name
+    this.firstName = firstName
+    this.age = age
+    this.getInfos = function(){
+      return "Hello my name is "+this.name+" "+this.firstName+" and I am "+this.age
+    }
+  }
+  var p1 = {
+    name : "xx",
+    firstName : "yy",
+    age : 123,
+    getInfos : function(){
+      return "Hello my name is "+this.name+" "+this.firstName+" and I am "+this.age
+    }
+  }
+
+  var p2 = {
+    name : "xx2",
+    firstName : "yy2",
+    age : 23,
+    getInfos : function(){
+      return "Hello my name is "+this.name+" "+this.firstName+" and I am "+this.age
+    }
+  }
+
+  console.log(p1.getInfos())
+  console.log(p2.getInfos())
+</script>
+</html>
