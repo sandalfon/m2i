@@ -1,0 +1,81 @@
+<html>
+<style>
+</style>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<h1>Bataille navale</h1>
+
+    <pre>
+                                       |__
+                                       |\/
+                                       ---
+                                      / | [
+                               !      | |||
+                             _/|     _/|-++'
+                         +  +--|    |--|--|_ |-
+                      { /|__|  |/\__|  |--- |||__/
+                     +---------------___[}-_===_.'____                 /\
+                 ____`-' ||___-{]_| _[}-  |     |_[___\==--            \/   _
+  __..._____--==/___]_|__|_____________________________[___\==--____,------' .7
+  |                                                                     BB-61/
+  \_________________________________________________________________________|
+</pre>
+<hr/>
+Position de tir:
+<input type='text' id="tir" value='0'/>
+<input type='button' value='Valider' onclick="impacte()"/>
+<h1 id='message'>-----------------</h1>
+<script>
+// generer la valeur secret
+function Navire()  {
+  this.init = function(){
+
+    this.etat = []
+    this.longueur = 0
+    this.position  = 0
+  this.longueur = Math.floor(Math.random () * 3) + 2
+  this.position  = Math.floor(Math.random () * (100 - this.longueur))
+
+  for (var i=0; i< this.longueur; i++)
+  {
+      this.etat [i] = false
+  }
+}
+}
+
+
+
+
+function BattailleNavale (){
+var compteur = 10 - 1
+this.navire = new Navire()
+this.navire.init()
+console.log(this.navire)
+this.evalue = function(tir)
+{
+    var reponse = "rate"
+    if (tir >= this.navire.position && tir <(this.navire.position + this.navire.longueur))
+    {
+        reponse = 'touche'
+        this.navire.etat[tir - this.navire.position] = true
+        if (this.navire.etat.indexOf (false) == -1) reponse = 'coulé'
+
+    }
+    return reponse
+}
+}
+
+var bN = new BattailleNavale()
+function impacte()
+{
+    var tir = parseInt(document.getElementById("tir").value)
+    var message   = document.getElementById("message")
+    // Couler ou raté
+    message.innerHTML = bN.evalue(tir)
+}
+
+</script>
+</body>
+</html>
