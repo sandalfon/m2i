@@ -1,0 +1,118 @@
+<html>
+<style>
+</style>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<h1>Bataille navale</h1>
+<img src='./bataillenavale.jpg' width='200'/>
+<hr/>
+Position de tir: 
+<input type='text' id="tir" value='0'/>
+<input type='button' value='Valider' onclick="impacte()"/>
+<div id="grille">ZZZZZZ</div><br/>
+<h1 id='message'>-----------------</h1>
+<script>
+
+class RenderGrille 
+{
+	constructor (div, nbligne, nbcolonne)
+	{
+		this.div = div
+		this.nbligne = nbligne
+		this.nbcolonne = nbcolonne
+	}
+	
+	selection(cellule)
+	{
+		alert(cellule)
+		if (cellule.style.background == 'red') cellule.style.background ='cyan'
+		else cellule.style.background ='red'
+	}
+
+	// Créer visuellement la grille
+	// id = fonct(ligne,colonne)
+	afficher ()
+	{
+		var buff ="<table border='1'>"
+		for (var ligne =0; ligne <this.nbligne; ligne ++)
+		{
+			buff +="<tr>"
+			for (var colonne =0; colonne <this.nbcolonne; colonne ++)
+			{
+				var cellule = "id_" +ligne+"_" + colonne 
+				buff +="<td id=" + cellule + ">"
+				buff+="<input type='checkbox' value='' onclick='rg.selection("+cellule+")'/>"
+				buff +="</td>"
+			}
+			buff +="</tr>"
+		}
+		buff +="</table>"
+		this.div.innerHTML=buff
+	}
+}
+
+// Rendre visuel
+//var grille = document.getElementById ("grille")
+//var rg = new RenderGrille (grille, 10,10)
+//rg.afficher()
+
+class Navire {
+  constructor(positions, longueur, orientation) {
+    this.positions = positions;
+    this.longueur = longueur;
+    this.orientation = orientation; // H/V
+    this.etat = []; // H/V
+	for(var i =0; i<this.longueur; i++) this.etat.push(false)
+  }
+  getPosition ()
+  {
+	return this.positions
+  }
+  getLongueur ()
+  {
+	return this.longueur
+  }
+  getEtat ()
+  {		
+	return this.etat
+  }
+  evaluer(tir)
+  {
+	// 1 = rate, 2=touche, 3=coule
+	if (this.orientation == 'H')
+	{
+		var ret = 1
+		if (tir[0]==this.positions[0] && (tir[1]>=this.positions[1] && tir[1]<=this.positions[1] + this.longueur -1))
+		{
+			ret = 2
+			this.etat[tir[1]-this.positions[1]] = true
+			if (this.etat.indexOf(false) == -1) ret = 3
+		}
+		return ret
+	}
+	else if (this.orientation == 'V')
+	{
+		var ret = 1
+		if (tir[1]==this.positions[1] && (tir[0]>=this.positions[0] && tir[0]<=this.positions[0] + this.longueur -1))
+		{
+			ret = 2
+			this.etat[tir[0]-this.positions[0]] = true
+			if (this.etat.indexOf(false) == -1) ret = 3
+		}
+		return ret
+	}
+  }
+}
+   
+var n = new Navire([1,1],2, 'V')
+console.log (n)
+var res = n.evaluer([1,1])
+console.log (res)
+res = n.evaluer([2,1])
+console.log (res)
+
+</script>
+</body>
+</html>

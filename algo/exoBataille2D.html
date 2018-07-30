@@ -1,0 +1,71 @@
+<html>
+<style>
+</style>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<h1>Bataille navale</h1>
+<img src='./bataillenavale.jpg' width='200'/>
+<hr/>
+Position de tir:
+<input type='text' id="tir" value='0'/>
+<input type='button' value='Valider' onclick="impacte()"/>
+<div id="grille">ZZZZZZ</div>
+<h1 id='message'>-----------------</h1>
+<script>
+
+function selection(cellule)
+{
+	alert(cellule)
+	if (cellule.style.background == 'red') cellule.style.background ='cyan'
+	else cellule.style.background ='red'
+}
+
+// Créer visuellement la grille
+// id = fonct(ligne,colonne)
+function remplir (nbligne, nbcolonne)
+{
+	var buff ="<table border='1'>"
+	for (var ligne =0; ligne <nbligne; ligne ++)
+	{
+		buff +="<tr>"
+		for (var colonne =0; colonne <nbcolonne; colonne ++)
+		{
+			var cellule = "id_" +ligne+"_" + colonne
+			buff +="<td id=" + cellule + ">"
+			buff+="<input type='checkbox' value='' onclick='selection("+cellule+")'/>"
+			buff +="</td>"
+		}
+		buff +="</tr>"
+	}
+	buff +="</table>"
+	// Rendre visuel
+	document.getElementById ("grille").innerHTML=buff
+}
+
+remplir (5,5)
+
+/*
+class Navire {
+  constructor(position, longueur) {
+    this.position = position;
+    this.longueur = longueur;
+  }
+  getPosition ()
+  {
+	return this.position
+  }
+  getLongueur ()
+  {
+	return this.longueur
+  }
+}
+
+var n = new Navire(10,20)
+console.log (n.getLongueur())
+console.log (n.getPosition())
+*/
+</script>
+</body>
+</html>
