@@ -179,10 +179,13 @@ __..._____--==/___]_|__|_____________________________[___\==--____,------' .7
 		class Flotille{
 			constructor(nbBoat){
 				this.boats =[]
-				while(this.boats.length < nbBoat){
+				var failled = 15
+				while(this.boats.length < nbBoat & failled !=0){
 					var boat = this.makeBoat()
-					if(this.isValidBoat(boat))
-					this.persist(boat)
+					if(this.isValidBoat(boat)){
+						this.persist(boat)
+				}
+					failled--
 				}
 			}
 
