@@ -1,0 +1,303 @@
+<html>
+<style>
+</style>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<h1>Bataille navale</h1>
+<img src='./bataillenavale.jpg' width='200'/>
+<hr/>
+Position de tir: 
+<input type='text' id="tir" value='0'/>
+<input type='button' value='Valider' onclick="impacte()"/>
+<div id="grille">ZZZZZZ</div><br/>
+<h1 id='message'>-----------------</h1>
+<script>
+
+class Navire {
+  constructor(positions, longueur, orientation) {
+    this.positions = positions;
+    this.longueur = longueur;
+    this.orientation = orientation; // H/V
+    this.etat = []; // H/V
+	for(var i =0; i<this.longueur; i++) this.etat.push(false)
+  }
+  getPosition ()
+  {
+	return this.positions
+  }
+  getLongueur ()
+  {
+	return this.longueur
+  }
+  getEtat ()
+  {		
+	return this.etat
+  }
+  evaluer(tir)
+  {
+	// 1 = rate, 2=touche, 3=coule
+	if (this.orientation == 'H')
+	{
+		var ret = 1
+		if (tir.ligne==this.positions.ligne && (tir.colonne>=this.positions.colonne && tir.colonne<=this.positions.colonne + this.longueur -1))
+		{
+			ret = 2
+			this.etat[tir.colonne-this.positions.colonne] = true
+			if (this.etat.indexOf(false) == -1) ret = 3
+		}
+		return ret
+	}
+	else if (this.orientation == 'V')
+	{
+		var ret = 1
+		if (tir.colonne==this.positions.colonne && (tir.ligne>=this.positions.ligne && tir.ligne<=this.positions.ligne + this.longueur -1))
+		{
+			ret = 2
+			this.etat[tir.ligne-this.positions.ligne] = true
+			if (this.etat.indexOf(false) == -1) ret = 3
+		}
+		return ret
+	}
+  }
+}
+   
+class Ocean
+{
+	constructor(nbligne, nbcolonne) {
+		this.nbligne = nbligne;
+		this.nbcolonne = nbcolonne;
+		this.mesnav = []
+	}
+	colonnesLibres1passe (colonnes)
+	{
+		// trouver la colonne degagee en considerant le navires orientés V
+		var liste = []
+		for (var c in colonnes)
+		{
+			// positions libres
+			var prendre = true
+			for(var i =0; i<this.mesnav.length&&this.mesnav[i].orientation == 'V'; i++)
+			{
+				console.log(this.mesnav[i].positions.colonne+"***"+colonnes[c])
+				if (this.mesnav[i].positions.colonne == colonnes[c]) 
+				{
+					prendre = false
+					break
+				}
+			}
+			if (prendre) liste.push(colonnes[c]);
+		}
+		liste = liste.length>0?liste:colonnes
+		return liste
+	}
+	colonnesLibres2passe (colonnes)
+	{
+		var liste = []
+		for (var c in colonnes)
+		{
+			for(var i =0; i<this.mesnav.length&&this.mesnav[i].orientation == 'H'; i++)
+			{
+				var prendre=true
+				for (var j=0; j<this.mesnav[i].positions.longueur; j++)
+				{
+					if (colonnes[c] == this.mesnav[i].positions.colonne+j)
+					{
+						prendre=false
+						break
+					}
+				}
+				if (prendre==true) liste.push(colonnes[c]);
+			}
+		}
+		console.log("#")
+		console.log(liste)
+		liste = liste.length>0?liste:colonnes
+		console.log("##")
+		console.log(liste)
+		return liste
+	}
+	lignesLibres1passe (lignes)
+	{
+		// trouver la ligne degagee en considerant le navires orientés V
+		var liste = []
+		for (var l in lignes)
+		{
+			for(var i =0; i<this.mesnav.length && this.mesnav[i].orientation == 'H' ; i++)
+			{
+				// positions libres
+				var prendre = true
+				console.log(this.mesnav[i].positions.ligne+"***"+lignes[l	])
+				if (this.mesnav[i].positions.ligne == lignes[l]) 
+				{
+					prendre = false
+					break
+				}
+				if (prendre) liste.push(lignes[l]);
+			}
+		}
+		console.log("#")
+		console.log(liste)
+		liste = liste.length>0?liste:lignes
+		console.log("##")
+		console.log(liste)
+		return liste
+	}
+	lignesLibres2passe (lignes)
+	{
+		var liste = []
+		for (var l in lignes)
+		{
+			for(var i =0; i<this.mesnav.length && this.mesnav[i].orientation == 'V' ; i++)
+			{
+				var prendre=true
+				for (var j=0; j<this.mesnav[i].positions.longueur; j++)
+				{
+					if (lignes[l] == this.mesnav[i].positions.colonne+j)
+					{
+						prendre=false
+						break
+					}
+				}
+				if (prendre==true) liste.push(lignes[l]);
+			}
+		}
+		console.log("#")
+		console.log(liste)
+		liste = liste.length>0?liste:lignes
+		console.log("##")
+		console.log(liste)
+		return liste
+	}
+	
+	// Colonne ou ligne libre selon orientation
+	trouverEmplacement (orientation, longueur)
+	{
+		var liste = []
+		if (orientation == 'V')
+		{
+			for (var i=0; i<this.nbcolonne; i++) liste.push(i)
+			var liste1 = this.colonnesLibres1passe (liste)
+			console.log("liste1")
+			console.log(liste1)
+			liste = this.colonnesLibres2passe (liste1)
+		}
+		if (orientation == 'H') 
+		{
+			for (var i=0; i<this.nbligne; i++) liste.push(i)			
+			var liste1 = this.lignesLibres1passe (liste)
+			console.log("liste1")
+			console.log(liste1)
+			liste = this.lignesLibres2passe(liste1)
+		}
+		// Prendre la premiere colonne libre
+		return Math.min.apply(Math,liste)
+	}
+
+	nouveauNavire ()
+	{
+		var orient = (Math.floor(Math.random() * 2) % 2 == 0) ? 'H':'V'
+		var longueur;
+		var ligne 
+		var colonne
+		if (orient == 'V')
+		{
+			longueur = 2 + Math.floor(Math.random() * 3 )
+			ligne = Math.floor(Math.random() * (this.nbcolonne - longueur ))
+			if (this.mesnav.length>0)
+				colonne = this.trouverEmplacement (orient,longueur)
+			else 
+				colonne = Math.floor(Math.random() * (this.nbcolonne-longueur))
+		}
+		else if (orient == 'H')
+		{
+			longueur = 2+Math.floor(Math.random() * 3 )
+			if (this.mesnav.length>0)
+				ligne = this.trouverEmplacement (orient,longueur)
+			else 
+				ligne = Math.floor(Math.random() * (this.nbcolonne - longueur ))
+			colonne = Math.floor(Math.random() * (this.nbcolonne- longueur))
+		}
+		var nav = new Navire({ligne : ligne, colonne : colonne}, longueur, orient)		
+		this.mesnav.push (nav)
+		return nav
+	}
+	
+}  
+var ocean = new Ocean(10,10)
+ocean.nouveauNavire ()
+ocean.nouveauNavire ()
+console.log (ocean.mesnav)
+
+class RenderGrille 
+{
+	constructor (div, nbligne, nbcolonne)
+	{
+		this.div = div
+		this.nbligne = nbligne
+		this.nbcolonne = nbcolonne
+	}
+	
+	selection(cellule)
+	{
+		alert(cellule)
+		var decoupage = cellule.id.split("_")
+		console.log(cellule.id)
+		console.log(decoupage)
+		var tir = [0,0];
+		tir[0] = parseInt(decoupage[1])
+		tir[1] = parseInt(decoupage[2])
+		console.log(tir)
+		var res;
+		res = ocean.mesnav[0].evaluer({ligne : tir[0], colonne : tir[1]})
+		console.log (res)
+		res = ocean.mesnav[1].evaluer({ligne : tir[0], colonne : tir[1]})
+		console.log (res)
+		if (cellule.style.background == 'red') cellule.style.background ='cyan'
+		else cellule.style.background ='red'
+	}
+
+	// Créer visuellement la grille
+	// id = fonct(ligne,colonne)
+	afficher ()
+	{
+		var buff ="<table border='1'>"
+		for (var ligne =0; ligne <this.nbligne; ligne ++)
+		{
+			buff +="<tr>"
+			for (var colonne =0; colonne <this.nbcolonne; colonne ++)
+			{
+				var cellule = "id_" +ligne+"_" + colonne 
+				buff +="<td id=" + cellule + ">"
+				buff+="<input type='checkbox' value='' onclick='rg.selection("+cellule+")'/>"
+				buff +="</td>"
+			}
+			buff +="</tr>"
+		}
+		buff +="</table>"
+		this.div.innerHTML=buff
+	}
+}
+
+// Rendre visuel
+var grille = document.getElementById ("grille")
+var rg = new RenderGrille (grille, 10,10)
+rg.afficher()
+
+
+
+/* 
+console.log (o.nouveauNavire ())
+console.log (o.nouveauNavire ())
+
+console.log (n)
+var res = n.evaluer({ligne : 1, colonne : 1})
+console.log (res)
+res = n.evaluer({ligne : 2, colonne : 1})
+console.log (res)
+*/
+
+</script>
+</body>
+</html>
