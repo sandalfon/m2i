@@ -1,0 +1,123 @@
+<html>
+<style>
+</style>
+<head>
+	<meta charset="UTF-8">
+</head>
+<body>
+	<div id='titre'></div>
+	<div id ="zoneAffichage">
+		<div id="zoneSaisie"></div>
+		<div id="zoneInfo"></div>
+	</div>
+
+	<script>
+	class JeuIHM{
+		constructor(lang){
+			this.jeuBE = new JeuBE()
+			this.tag = lang
+
+			document.getElementById('titre').innerHTML =" Titre en "+this.tag
+
+			var str2print=	"Saisie de valeur : <input type ='text' id=\"lasaisie\" valeur =\'0\'/>"+
+			"<input type='button' value='Devine hahaha lang:"+this.tag+"'onclick=\"jihm.choisir()\"/>"
+
+			document.getElementById('zoneSaisie').innerHTML = str2print
+		}
+
+		choisir(){
+			var valeurSaisie = parseInt(document.getElementById("lasaisie").value)
+			var codeJeu = this.jeuBE.evaluate(valeurSaisie)
+			console.log(valeurSaisie)
+			console.log(codeJeu)
+			switch(codeJeu) {
+				case 0:
+				this.afficheLess()
+				break;
+				case 1:
+				this.afficheMore()
+				break;
+				case 2:
+				this.afficheWin()
+				break;
+				case 3:
+				this.affichLose()
+				break;
+				default:
+				alert("OUPS t'as déconné")
+			}
+
+
+		}
+
+		affichLose(){
+			var str2print= "perdu en langue  "+this.tag
+
+				document.getElementById('zoneAffichage').innerHTML = str2print
+
+		}
+
+		afficheWin(){
+			var str2print= "gagné en "+this.jeuBE.getCurrentTry()+" coup(s) en langue  "+this.tag
+
+				document.getElementById('zoneAffichage').innerHTML = str2print
+		}
+
+		afficheLess(){
+			var str2print= "moins en langue  "+this.tag
+
+				document.getElementById('zoneInfo').innerHTML = str2print
+		}
+
+
+		afficheMore(){
+			var str2print= "plus en langue  "+this.tag
+
+				document.getElementById('zoneInfo').innerHTML = str2print
+
+		}
+	}
+
+
+
+
+class JeuBE{
+	constructor(){
+		this.maxTry = 10
+		this.target = Math.floor(Math.random() * 100)
+		this.currentTry = 0
+		console.log("target "+this.target )
+	}
+	//0 : moins; 1 : plus, 2 : bingo, 3 : perdu
+	evaluate(current){
+		this.currentTry++
+		console.log("current "+this.currentTry)
+		if(this.maxTry < this.currentTry){
+			return 3
+		}
+
+		if(this.target == current){
+			return 2
+		}
+		else{
+			if(this.target > current){
+				return 1
+			}
+			else{
+				return 0
+			}
+		}
+	}
+	getCurrentTry(){
+		return this.currentTry
+	}
+
+}
+
+
+jihm = new JeuIHM("en")
+
+
+</script>
+</body>
+</html>
