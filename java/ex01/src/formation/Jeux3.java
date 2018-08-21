@@ -28,7 +28,7 @@ public class Jeux3 {
 	public static void main(String args[]) {
 		int max = 20;
 		int maxNb = 100;
-		int[] arr = Jeux2.generateInt(max, maxNb);
+		int[] arr = Generator.generateInt(max, maxNb);
 
 		System.out.println(Arrays.toString(arr));
 

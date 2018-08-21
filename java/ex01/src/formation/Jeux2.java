@@ -9,7 +9,7 @@ class Jeux2 {
 	public static void main(String args[]) {
 		int max = 20;
 
-		int[] arr = Jeux2.generateInt(max);
+		int[] arr = Generator.generateInt(max);
 		System.out.println(Arrays.toString(arr));
 		HashMap<Integer, Integer> res = Jeux2.hashVersion(arr);
 		System.out.println(res.toString());
@@ -20,22 +20,7 @@ class Jeux2 {
 		Jeux2.minMax(arr);
 	}
 
-	public static int[] generateInt(int max) {
-		int[] arr = new int[max];
-		for (int i = 0; i < max; i++)
-			arr[i] = (int) Math.ceil(Math.random() * 10);
-		return arr;
 
-	}
-	
-	public static int[] generateInt(int max, int maxNb) {
-		int[] arr = new int[max];
-		for (int i = 0; i < max; i++)
-			arr[i] = (int) Math.ceil(Math.random() * maxNb);
-		return arr;
-
-	}
-	
 
 	public static HashMap<Integer, Integer> hashVersion(int[] arr) {
 		HashMap<Integer, Integer> res = new HashMap<Integer, Integer>();
