@@ -11,12 +11,13 @@ public class Jeux9 {
 		int count =1;
 		ArrayList<Integer> tmp = new ArrayList<Integer>();
 		for(int i : arr) {
-			tmp.add(i);
+			
 			if(!(i > 10*(count-1) &&  i  < 10*count)) {
 				res.add(tmp);
 				count++;
 				 tmp = new ArrayList<Integer>();
 			}
+			tmp.add(i);
 
 		}
 		
