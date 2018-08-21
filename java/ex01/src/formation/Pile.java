@@ -26,6 +26,10 @@ public class Pile<E>{
 		
 	}
 	
+	public boolean isEmpty() {
+		 return this.position==0;
+	}
+	
 
 	public String toString() {
 		String str ="[";
