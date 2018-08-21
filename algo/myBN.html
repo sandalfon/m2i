@@ -1,0 +1,367 @@
+
+<!-- saved from url=(0031)http://www.joonsam.fr/myBN.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>
+</style>
+
+
+<style>@media print {#ghostery-purple-box {display:none !important}}</style></head>
+<body data-feedly-mini="yes">
+	<h1>Bataille navale</h1>
+
+	<pre>				                          |__
+				                          |\/
+				                           ---
+	 			                         / | [
+	 		                    !      | |||
+			                  _/|     _/|-++'
+		                +  +--|    |--|--|_ |-
+		                { /|__|  |/\__|  |--- |||__/
+		               +---------------___[}-_===_.'____                 /\
+	             ____`-' ||___-{]_| _[}-  |     |_[___\==--            \/   _
+__..._____--==/___]_|__|_____________________________[___\==--____,------' .7
+|                                                                     BB-61/
+\_________________________________________________________________________|
+		</pre>
+		<hr>
+		<div id="grille">
+		</div><br>
+		<h1 id="message">-----------------</h1>
+		<script>
+		const gridRow = 10
+		const gridCol= 10
+		//gestion des coordonnées
+		class Position{
+			constructor(row,col){
+				this.row = row
+				this.col = col
+			}
+
+			setRow(row){
+				this.row=row
+			}
+			setCol(col){
+				this.col=col
+			}
+			getRow(){
+				return this.row
+
+			}
+			getCol(){
+				return this.col
+			}
+			getCord(){
+				return([this.row,this.col])
+			}
+			setCord(pos){
+				this.row=pos[0]
+				this.col=pos[1]
+			}
+			toString(){
+				return "row= "+this.row+"; col= "+this.col
+			}
+			isEqual(pos){
+				return (this.row == pos.getRow() && this.col== pos.getCol())
+			}
+
+		}
+
+
+		//Ocean
+		class Grid{
+			constructor (div, nbRow, nbColumn)
+			{
+				this.div = div
+				this.nbRow = nbRow
+				this.nbColumn = nbColumn
+				this.content = [] // tableau des cases acces i*nbrow+j
+			}
+			makeCase(){
+				var str2print ="<table border='1'>"
+				for (var row = 0; row < this.nbRow; row ++)
+				{
+					str2print +="<tr>"
+					for (var col =0; col <this.nbColumn; col ++)
+					{
+						var myCase = new Case(row,col)
+						str2print+=myCase.getCell()
+						this.content.push(myCase)
+					}
+					str2print +="</tr>"
+				}
+				str2print +="</table>"
+				this.div.innerHTML=str2print
+			}
+
+			applyStyle(color){
+				for ( var i = 0; i < this.content.length;i++)
+				{
+					document.getElementById(this.content[i].caseName).style.background = color
+				}
+			}
+		}
+
+		//position sur l'ocean
+		class Case{
+
+			constructor(row, column){
+				this.color = 'purple'
+				this.row= row
+				this.column = column
+				this.caseName = "id_" +this.row+"_" + this.column
+			}
+			getCell(){
+				var str2print=""
+				str2print +="<td id=" + this.caseName + ">"
+				str2print+="<input type='checkbox' value='' onclick='bn.eval("+this.caseName+")'/>"
+				str2print +="</td>"
+				return str2print
+			}
+			setCaseColor(color){
+				document.getElementById(this.caseName).style.background = this.color
+			}
+
+		}
+
+		//Jeux
+		class BatailleNarval{
+			constructor(nbBoat){
+
+				this.grille = document.getElementById ("grille")
+				this.rg = new Grid (grille, gridRow,gridCol)
+				this.flotille = new Flotille(nbBoat)
+				this.rg.makeCase()
+				this.rg.applyStyle("cyan")
+
+			}
+
+			eval(caseName){
+				var name = caseName.id
+				var n = name.indexOf("_");
+				var m =name.lastIndexOf("_")
+				var row = Number(name.substr(n+1,m-3))
+				var col = Number(name.substr(m+1,name.length-1))
+				var pos = new Position(row,col)
+				var tir =new Tir(pos)
+				var touchId =this.flotille.isAtPos(pos)
+				if(touchId<0){
+					if(	caseName.style.background!=='red' && caseName.style.background!=='black' )
+							caseName.style.background ='orange'
+				}else{
+					var dic = this.flotille.touchBoatAtPos(touchId,pos)
+					var color = Object.keys(dic)[0];
+					for(var i =0 ; i< dic[color].length;i++){
+						var position = dic[color][i]
+						document.getElementById ( "id_" +position.getRow()+"_" + position.getCol()).style.background = color
+					}
+				}
+
+				if(this.flotille.isGameOver()){
+					alert("GG")
+					document.getElementById("grille").innerHTML = "<h1>coulé</h1><br>"+
+					"<pre>"+
+					"                                  \\\n"+
+					"                                   \\   O,\n"+
+					"                        \\___________\\/ )_________/\n"+
+					"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \\~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"+
+					"                                       \\\n"+
+					"</pre>"
+				}
+			}
+
+
+		}
+
+
+		//gestion des Boats
+		class Flotille{
+			constructor(nbBoat){
+				this.boats =[]
+				while(this.boats.length < nbBoat){
+					var boat = this.makeBoat()
+					if(this.isValidBoat(boat))
+					this.persist(boat)
+				}
+			}
+
+			makeBoat(){
+				var orientation = ( Math.floor(Math.random() * Math.floor(2))==1)?'H':'V'
+				var length = Math.floor(Math.random () * 3) + 2
+				var decalR=0
+				var decalC=0
+				if(orientation === 'V'){
+
+					decalR=length
+				}else{
+					decalC=length
+				}
+
+				var pos  = new Position(Math.floor(Math.random () * (gridRow - decalR)),
+				Math.floor(Math.random () * (gridCol - decalC))
+			)
+
+			/*	console.log("********")
+			console.log("length "+length)
+			console.log("decalR "+decalR)
+			console.log("decalC "+decalC)
+			console.log("pos "+pos)
+			console.log("orientation "+orientation)
+			console.log("test "+(orientation === 'V'))
+			console.log("***END*****")*/
+
+			var boat = new Boat(pos,length,orientation)
+
+
+			return boat
+		}
+
+		persist(boat){
+			console.log("boat "+boat.getInfo())
+			this.boats.push(boat)
+		}
+
+		isGameOver(){
+			return this.boats.length == 0
+
+		}
+
+		isValidBoat(boat){
+			var allPosBoat = boat.getAllPositions()
+			var allPosBoats = this.getAllPositions()
+			for(var i=0; i<allPosBoat.length;i++ ){
+				for(var j=0; j< allPosBoats.length;j++){
+					if(allPosBoat[i].isEqual(allPosBoats[j])){
+						return false
+					}
+				}
+			}
+
+			return true
+		}
+
+		getAllPositions(){
+			var positions =[]
+			for(var i =0; i<this.boats.length;i++){
+				var boatPos = this.boats[i].getAllPositions()
+				for(var j =0; j< boatPos.length; j++){
+					positions.push(boatPos[j])
+				}
+
+			}
+			return positions
+		}
+
+
+		isAtPos(pos){
+			for(var i =0; i< this.boats.length;i++){
+				if(this.boats[i].isAtPos(pos)){
+
+					return i
+				}
+			}
+
+			return -1
+		}
+
+		touchBoatAtPos(i,pos){
+			var boat = this.boats[i]
+			var deltaRow = pos.getRow()	- boat.position.getRow()
+			var deltaCol= pos.getCol() - boat.position.getCol()
+			this.boats[i].state[Math.max(deltaRow,deltaCol)] = true
+			console.log("aaa "+	this.boats[i].getInfo())
+			var dic ={}
+			if(	this.boats[i].isAlive()){
+				dic["red"]=[pos]
+			}else{
+				dic["black"]=this.boats[i].getAllPositions()
+				this.boats.splice(i,1)
+			}
+			return dic
+		}
+		/*
+		getBoatAtPos(pos){
+		return
+	}*/
+}
+
+//Boats
+class Boat{
+	constructor(position,length,orientation){
+		this.position = position;
+		this.length = length;
+		this.orientation = orientation; // H/V
+		this.state = []; // H/V
+		for(var i =0; i<this.length; i++) this.state.push(false)
+	}
+
+	isAtPos(position){
+		var allPos = this.getAllPositions()
+		for(var i = 0; i< allPos.length; i++){
+			if(position.isEqual(allPos[i]))
+			return true
+		}
+		return false
+	}
+
+	getAllPositions(){
+		var	positions =[]
+		for(var i = 0; i < this.length; i++ ){
+			if(this.orientation =='H'){
+				var pos = new Position(this.position.getRow(),this.position.getCol()+i)
+				positions.push(pos)
+			}
+			else{
+				var pos = new Position(this.position.getRow()+i,this.position.getCol())
+				positions.push(pos)
+			}
+		}
+		return positions
+	}
+
+
+	isAlive(){
+	console.log(this.state.indexOf(false))
+		return this.state.indexOf(false)>=0
+	}
+
+
+	stateToString(){
+		var str2print ="<"
+		for(var i = 0; i< this.state.length; i++){
+			str2print+=(this.state[i])?"X":"O"
+		}
+		str2print+=">"
+
+		return str2print
+	}
+	getInfo(){
+		return "position: "+this.position.toString()+"\n"+
+		"length "+this.length+"\n"+
+		"orientation "+this.orientation+"\n"+
+		"All pos"+ this.getAllPositions()+"\n"+
+		"state "+this.stateToString()
+	}
+}
+
+
+//Tir
+class Tir{
+	constructor(pos){
+		this.pos=pos
+	}
+	getPos(){
+		return this.pos
+	}
+	selection(cellule){
+		cellule.style.background ='red'
+
+	}
+}
+
+
+
+var bn = new BatailleNarval(3)
+
+</script>
+
+
+<div id="feedly-mini" title="feedly Mini tookit"></div></body></html>

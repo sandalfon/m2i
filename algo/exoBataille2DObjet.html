@@ -58,11 +58,14 @@ var grille = document.getElementById ("grille")
 var rg = new RenderGrille (grille, 10,10)
 rg.afficher()
 
-/*
+
 class Navire {
-  constructor(position, longueur) {
-    this.position = position;
+  constructor(positions, longueur,orientation) {
+    this.positions = positions;
     this.longueur = longueur;
+		this.orientation = orientation
+		this.etat = []
+		for(var i =0; i<this.longueur;i++) this.etat.push(false)
   }
   getPosition ()
   {
@@ -72,12 +75,41 @@ class Navire {
   {
 	return this.longueur
   }
+	getEtat(){
+		
+		return false
+	}
+	evaluer(tir){
+		if(this.orientation.equals("horizontal")){
+			this.evaluateHor(tir)
+		}else{
+				this.evaluateVert(tir)
+		}
+
+	}
+private evaluateHor(tir){
+	if(tir.y != this.position.y){
+		return 0
+	}
+
+		if(this.longeur>= tir.x && this.longueur  ){
+			return 1
+				this.checkCouler()
+		}
+		else return 0
+}
+
+private evaluateVert(tir){
+
+}
+
+
 }
 
 var n = new Navire(10,20)
 console.log (n.getLongueur())
 console.log (n.getPosition())
-*/
+
 </script>
 </body>
 </html>
