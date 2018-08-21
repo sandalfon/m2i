@@ -19,9 +19,14 @@ public class Pile<E>{
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	public void set(int  i, E e) {
+		if(i <= this.position) {
+			this.data[i]=e;
+		}
+		
+	}
+	
+
 	public String toString() {
 		String str ="[";
 		for(int i = 0 ; i < this.position;i++) {
