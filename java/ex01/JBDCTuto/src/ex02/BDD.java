@@ -3,8 +3,11 @@ package ex02;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class BDD {
 	private String bd;
@@ -14,11 +17,13 @@ public class BDD {
 	private Connection c=null;
 	private Statement st=null;
 	private PreparedStatement pst=null;
+	
+	
 	public BDD(String bd, String login, String pwd, String table) {
 		this.bd= bd;
 		this.login = login;
 		this.pwd = pwd;
-				this.table=table;
+		this.table=table;
 	}
 	
 	
@@ -57,6 +62,26 @@ public class BDD {
 		this.pst.setObject(1, name);
 		this.pst.setObject(2, age);
 		this.pst.executeUpdate();
+	}
+	
+	public ArrayList<ArrayList<String>> select() throws SQLException{
+		ArrayList<ArrayList<String>> res = new ArrayList<ArrayList<String>>();
+		this.st = this.c.createStatement();
+		  ResultSet rs = this.st.executeQuery("Select *  from "+this.table);
+		ResultSetMetaData metaData = rs.getMetaData();
+		int columnCount = metaData.getColumnCount();
+
+		while(rs.next()) {
+			ArrayList<String> tmp = new ArrayList<String>();
+		    for(int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+		        Object object = rs.getObject(columnIndex);
+		        tmp.add(object.toString());
+		    }
+		    res.add(tmp);
+		    
+		}
+		return res;
+		
 	}
 	
 	
