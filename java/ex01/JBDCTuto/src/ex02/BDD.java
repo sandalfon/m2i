@@ -62,6 +62,8 @@ public class BDD {
 		this.pst.setObject(1, name);
 		this.pst.setObject(2, age);
 		this.pst.executeUpdate();
+		
+		
 	}
 	
 	public ArrayList<ArrayList<String>> select() throws SQLException{

@@ -76,7 +76,54 @@ public class CSV {
 		
 	}
 	
-	public void writeLine(ArrayList<ArrayList<String>> lines) {
+public void writeLine(ArrayList<String> line) {
+		
+		
+		BufferedWriter bw = null;
+		FileWriter fw = null;
+
+		try {
+
+			String content = "This is the content to write into file\n";
+
+			fw = new FileWriter(this.file);
+			bw = new BufferedWriter(fw);
+			
+			bw.write(String.join(";", line)+"\n");
+
+			
+			System.out.println("Done");
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+
+		} finally {
+
+			try {
+
+				if (bw != null)
+					bw.close();
+
+				if (fw != null)
+					fw.close();
+
+			} catch (IOException ex) {
+
+				ex.printStackTrace();
+
+			}
+
+		}
+
+	}
+	
+	
+	
+	
+	
+	
+	public void writeLines(ArrayList<ArrayList<String>> lines) {
 		
 		
 		BufferedWriter bw = null;
@@ -118,4 +165,8 @@ public class CSV {
 
 	}
 
+	
+	
+	
+	
 }
